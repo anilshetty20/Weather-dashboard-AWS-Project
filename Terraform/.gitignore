@@ -1,0 +1,18 @@
+.terraform/
+*.tfstate
+*.tfstate.backup
+# Crash log files
+crash.log
+# Exclude .terraformrc and terraform.rc which may contain sensitive information
+.terraformrc
+terraform.rc
+# Exclude override files which may contain sensitive information
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+# Exclude CLI configuration files which may contain sensitive information
+.terraformrc
+terraform.rc
+# Exclude any .env files which may contain sensitive information
+.env
