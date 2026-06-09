@@ -49,7 +49,7 @@ app.use((err, _req, res, _next) => {
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`
 ╔══════════════════════════════════════════════╗
-║        Weather Backend is running            ║
+║        Weather-Backend is running            ║
 ║                                              ║
 ║  Local:   http://localhost:${PORT}           ║
 ║  EC2:     http://<your-ec2-ip>:${PORT}       ║
