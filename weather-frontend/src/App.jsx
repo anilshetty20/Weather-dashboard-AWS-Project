@@ -50,7 +50,7 @@ export default function App() {
             }}>
               WEATHER
             </span>
-            <span style={{ color: 'var(--accent)' }}> LIKE?</span>
+            <span style={{ color: 'var(--accent)' }}> TODAY?</span>
           </h1>
         </div>
 
