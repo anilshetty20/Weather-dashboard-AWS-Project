@@ -54,7 +54,7 @@ app.listen(PORT, '0.0.0.0', () => {
 ║  Local:   http://localhost:${PORT}           ║
 ║  EC2:     http://<your-ec2-ip>:${PORT}       ║
 ║                                              ║
-║  Endpoints: for backend                      ║
+║  Endpoints: for backend weather API          ║
 ║    GET /health                               ║
 ║    GET /weather?city=London                  ║
 ║    GET /searches                             ║
