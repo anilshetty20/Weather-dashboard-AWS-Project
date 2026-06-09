@@ -70,8 +70,8 @@ jobs:
             docker pull ${{ secrets.ECR_REPO_URL }}:latest
 
             # Stop and remove old container
-            docker stop weather-backend-container || true
-            docker rm   weather-backend-container || true
+            docker stop weather-backend-contianer || true
+            docker rm   weather-backend-contianer || true
 
             # Run new container
             docker run -d \
