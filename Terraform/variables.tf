@@ -11,6 +11,12 @@ variable "aws_region" {
   default     = "us-east-1"
 }
 
+variable "project_name" {
+  description = "Project name prefix for resources"
+  type        = string
+  default     = "WeatherDashboard"
+}
+
 variable "table_name" {
   description = "DynamoDB table name"
   type        = string

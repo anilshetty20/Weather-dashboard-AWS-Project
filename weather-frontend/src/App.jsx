@@ -34,7 +34,7 @@ export default function App() {
               display: 'inline-block', width: 20, height: 1,
               background: 'var(--accent)',
             }} />
-            Real-time Weather Intelligence
+            Real-time Weather Intelligence Report
           </p>
           <h1 style={{
             fontFamily: 'var(--font-display)',
