@@ -1,0 +1,87 @@
+# ─────────────────────────────────────────────────────────────────
+#  .github/workflows/backend.yml
+#
+#  Triggered when any file inside backend/ changes on main branch.
+#  Steps:
+#    1. Checkout code
+#    2. Build Docker image
+#    3. Push to ECR
+#    4. SSH into EC2 → pull new image → restart container
+# ─────────────────────────────────────────────────────────────────
+
+name: Backend — Build, Push to ECR and Deploy to EC2
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'backend/**'   # only runs when backend files change
+
+jobs:
+  deploy:
+    name: Build Docker Image and Deploy to EC2
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout the repo
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. Configure AWS credentials
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id:     ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region:            ${{ secrets.AWS_REGION }}
+
+      # 3. Login to ECR
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      # 4. Build Docker image and push to ECR
+      - name: Build and push Docker image
+        working-directory: backend
+        env:
+          ECR_REPO: ${{ secrets.ECR_REPO_URL }}
+        run: |
+          # Build with commit SHA tag + latest tag
+          docker build -t $ECR_REPO:${{ github.sha }} -t $ECR_REPO:latest .
+          docker push $ECR_REPO:${{ github.sha }}
+          docker push $ECR_REPO:latest
+          echo "Image pushed: $ECR_REPO:${{ github.sha }}"
+
+      # 5. SSH into EC2 and redeploy container
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v1
+        with:
+          host:        ${{ secrets.EC2_HOST }}
+          username:    ubuntu
+          key:         ${{ secrets.EC2_SSH_KEY }}
+          timeout:     60s
+          script: |
+            # Login to ECR from EC2 (uses IAM role — no keys needed)
+            aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | \
+              docker login --username AWS --password-stdin ${{ secrets.ECR_REPO_URL }}
+
+            # Pull the latest image
+            docker pull ${{ secrets.ECR_REPO_URL }}:latest
+
+            # Stop and remove old container
+            docker stop weather-backend-container || true
+            docker rm   weather-backend-container || true
+
+            # Run new container
+            docker run -d \
+              --name weather-backend-container \
+              --restart unless-stopped \
+              -p 3000:3000 \
+              --env-file ~/backend.env \
+              ${{ secrets.ECR_REPO_URL }}:latest
+
+            # Verify it started
+            sleep 5
+            docker ps | grep weather-backend-container
+            echo "Backend deployed successfully!"
