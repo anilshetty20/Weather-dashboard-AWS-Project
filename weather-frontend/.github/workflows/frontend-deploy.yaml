@@ -1,0 +1,75 @@
+# ─────────────────────────────────────────────────────────────────
+#  .github/workflows/frontend.yml
+#
+#  Triggered when any file inside frontend/ changes on main branch.
+#  Steps:
+#    1. Checkout code
+#    2. Install dependencies
+#    3. Build React app (npm run build)
+#    4. Upload dist/ to S3
+# ─────────────────────────────────────────────────────────────────
+
+name: Frontend — Build and Deploy to S3
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'frontend/**'   # only runs when frontend files change
+
+jobs:
+  deploy:
+    name: Build and Upload to S3
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout the repo
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. Set up Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      # 3. Install dependencies
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm install
+
+      # 4. Build React app
+      #    VITE_API_BASE is injected at build time from GitHub Secrets
+      - name: Build React app
+        working-directory: frontend
+        env:
+          VITE_API_BASE: http://${{ secrets.EC2_HOST }}:3000
+        run: npm run build
+
+      # 5. Configure AWS credentials
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id:     ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region:            ${{ secrets.AWS_REGION }}
+
+      # 6. Upload dist/ to S3 (delete removed files too)
+      - name: Deploy to S3
+        run: |
+          aws s3 sync frontend/dist/ s3://${{ secrets.S3_BUCKET }}/ \
+            --delete \
+            --cache-control "max-age=31536000,immutable"
+
+          # index.html should not be cached — always fetch latest
+          aws s3 cp frontend/dist/index.html s3://${{ secrets.S3_BUCKET }}/index.html \
+            --cache-control "no-cache,no-store,must-revalidate"
+
+      # 7. Print the website URL
+      - name: Done
+        run: |
+          echo "Frontend deployed!"
+          echo "URL: http://${{ secrets.S3_BUCKET }}.s3-website-${{ secrets.AWS_REGION }}.amazonaws.com"
