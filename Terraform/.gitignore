@@ -1,6 +1,6 @@
-.terraform/
+**/.terraform/
 *.tfstate
-*.tfstate.backup
+*.tfstate.*
 # Crash log files
 crash.log
 # Exclude .terraformrc and terraform.rc which may contain sensitive information
