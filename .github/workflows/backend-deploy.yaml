@@ -16,7 +16,7 @@ on:
     branches:
       - main
     paths:
-      - 'backend/**'   # only runs when backend files change
+      - 'weather-backend/**'   # only runs when backend files change
 
 jobs:
   deploy:
@@ -43,7 +43,7 @@ jobs:
 
       # 4. Build Docker image and push to ECR
       - name: Build and push Docker image
-        working-directory: backend
+        working-directory: weather-backend
         env:
           ECR_REPO: ${{ secrets.ECR_REPO_URL }}
         run: |
