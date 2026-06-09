@@ -49,10 +49,10 @@ app.use((err, _req, res, _next) => {
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`
 ╔══════════════════════════════════════════════╗
-║        SkyWatch Backend is running           ║
+║        Weather Backend is running            ║
 ║                                              ║
-║  Local:   http://localhost:${PORT}              ║
-║  EC2:     http://<your-ec2-ip>:${PORT}          ║
+║  Local:   http://localhost:${PORT}           ║
+║  EC2:     http://<your-ec2-ip>:${PORT}       ║
 ║                                              ║
 ║  Endpoints:                                  ║
 ║    GET /health                               ║
