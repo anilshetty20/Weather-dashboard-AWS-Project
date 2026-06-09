@@ -16,7 +16,7 @@ on:
     branches:
       - main
     paths:
-      - 'frontend/**'   # only runs when frontend files change
+      - 'weather-frontend/**'   # only runs when frontend files change
 
 jobs:
   deploy:
@@ -34,17 +34,17 @@ jobs:
         with:
           node-version: '18'
           cache: 'npm'
-          cache-dependency-path: frontend/package-lock.json
+          cache-dependency-path: weather-frontend/package-lock.json
 
       # 3. Install dependencies
       - name: Install dependencies
-        working-directory: frontend
+        working-directory: weather-frontend
         run: npm install
 
       # 4. Build React app
       #    VITE_API_BASE is injected at build time from GitHub Secrets
       - name: Build React app
-        working-directory: frontend
+        working-directory: weather-frontend
         env:
           VITE_API_BASE: http://${{ secrets.EC2_HOST }}:3000
         run: npm run build
@@ -60,12 +60,12 @@ jobs:
       # 6. Upload dist/ to S3 (delete removed files too)
       - name: Deploy to S3
         run: |
-          aws s3 sync frontend/dist/ s3://${{ secrets.S3_BUCKET }}/ \
+          aws s3 sync weather-frontend/dist/ s3://${{ secrets.S3_BUCKET }}/ \
             --delete \
             --cache-control "max-age=31536000,immutable"
 
           # index.html should not be cached — always fetch latest
-          aws s3 cp frontend/dist/index.html s3://${{ secrets.S3_BUCKET }}/index.html \
+          aws s3 cp weather-frontend/dist/index.html s3://${{ secrets.S3_BUCKET }}/index.html \
             --cache-control "no-cache,no-store,must-revalidate"
 
       # 7. Print the website URL
