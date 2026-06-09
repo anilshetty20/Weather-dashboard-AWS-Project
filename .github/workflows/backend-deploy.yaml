@@ -75,7 +75,7 @@ jobs:
 
             # Run new container
             docker run -d \
-              --name weather-backend-container \
+              --name weather-backend-contianer \
               --restart unless-stopped \
               -p 3000:3000 \
               --env-file ~/backend.env \
@@ -83,5 +83,5 @@ jobs:
 
             # Verify it started
             sleep 5
-            docker ps | grep weather-backend-container
+            docker ps | grep weather-backend-contianer
             echo "Backend deployed successfully!"
