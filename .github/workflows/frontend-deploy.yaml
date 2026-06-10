@@ -46,7 +46,7 @@ jobs:
       - name: Build React app
         working-directory: weather-frontend
         env:
-          VITE_API_BASE: http://${{ secrets.EC2_HOST }}:3000
+          VITE_API_BASE: http://${{ secrets.VITE_API_BASE }}:3000
         run: npm run build
 
       # 5. Configure AWS credentials
