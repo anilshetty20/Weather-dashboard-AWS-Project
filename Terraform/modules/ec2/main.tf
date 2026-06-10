@@ -105,3 +105,13 @@ resource "aws_instance" "weather" {
     OS      = "Ubuntu-24.04-LTS"
   }
 }
+
+# Elastic IP — static IP that survives EC2 stop/start
+resource "aws_eip" "weather" {
+  instance = aws_instance.weather.id
+  domain   = "vpc"
+
+  tags = {
+    Project = "Weather"
+  }
+}
