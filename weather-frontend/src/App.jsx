@@ -90,7 +90,7 @@ export default function App() {
           fontFamily: 'var(--font-mono)', fontSize: '0.62rem',
           color: 'var(--muted)', letterSpacing: '0.1em',
         }}>
-          AWS REACT APP
+          AWS WEATHER APP REACT FRONTEND
         </span>
       </footer>
     </>
