@@ -40,4 +40,5 @@ module "cloudfront" {
   s3_bucket_name            = module.s3.bucket_name
   s3_bucket_arn             = module.s3.bucket_arn
   s3_bucket_regional_domain = module.s3.bucket_regional_domain
+  ec2_public_dns            = module.ec2.public_dns   # DNS not IP
 }
