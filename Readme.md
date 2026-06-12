@@ -122,9 +122,9 @@ CloudFront (HTTPS: xxxx.cloudfront.net)
 ## Project Structure
 
 ```
-Weather-dashboard-AWS-Project/
+Weather dashboard/
 │
-├── frontend/                        # React + Vite app
+├── weather-frontend/                # React + Vite app
 │   ├── src/
 │   │   ├── App.jsx                  # Root component
 │   │   ├── index.css                # Global styles + CSS variables
@@ -144,21 +144,21 @@ Weather-dashboard-AWS-Project/
 │   ├── vite.config.js               # base: "./" for S3 compatibility
 │   └── package.json
 │
-├── backend/                         # Node.js Express API
+├── weather-backend/                 # Node.js Express API
 │   ├── server.js                    # Entry point + middleware
 │   ├── routes.js                    # GET /health /weather /searches
 │   ├── weatherService.js            # OpenWeatherMap API call
 │   ├── searchesService.js           # DynamoDB read/write
 │   ├── db.js                        # DynamoDB client (uses IAM role)
 │   ├── Dockerfile                   # Multi-stage, non-root user
-│   └── .env.example                 # Environment variable template
+│   └── .env                         # Environment variable template
 │
-├── terraform/                       # Infrastructure as Code
+├── Terraform/                       # Infrastructure as Code
 │   ├── main.tf                      # Calls all modules
 │   ├── provider.tf                  # AWS provider + S3 backend
 │   ├── variables.tf                 # All input variables
 │   ├── outputs.tf                   # EC2 IP, CloudFront URL, etc.
-│   ├── terraform.tfvars.example     # Variable values template
+│   ├── terraform.tfvars             # Variable values template
 │   └── modules/
 │       ├── dynamodb/                # WeatherSearches table
 │       ├── iam/                     # EC2 role + policies
@@ -167,13 +167,13 @@ Weather-dashboard-AWS-Project/
 │       ├── s3/                      # Static website bucket
 │       └── cloudfront/              # HTTPS CDN (2 origins)
 │
-├── terraform-bootstrap/             # Remote state setup (run once)
+├── Terraform-remote-statefile/      # Remote state setup (run once)
 │   └── main.tf                      # S3 bucket + DynamoDB lock table
 │
 └── .github/
     └── workflows/
-        ├── frontend.yml             # Build + S3 deploy + CF invalidate
-        └── backend.yml              # Docker build + ECR + EC2 deploy
+        ├── frontend-deploy.yml       # Build + S3 deploy + CF invalidate
+        └── backend-deploy.yml        # Docker build + ECR + EC2 deploy
 ```
 
 ---
@@ -362,7 +362,7 @@ EventBridge Scheduler automatically stops EC2 at night and starts it in the morn
 
 | Service | Free Tier Limit | Expected Usage | Cost |
 |---------|----------------|----------------|------|
-| EC2 t2.micro | 750 hrs/month | ~360 hrs (with scheduler) | $0 |
+| EC2 t2.small | 750 hrs/month | ~360 hrs (with scheduler) | $0 |
 | DynamoDB | 25GB + 25 WCU/RCU | Minimal | $0 |
 | S3 | 5GB + 20k GET | Minimal | $0 |
 | CloudFront | 1TB transfer | Minimal | $0 |
