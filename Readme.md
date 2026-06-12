@@ -1,6 +1,6 @@
 <div align="center">
 
-# ⬡ SkyWatch
+# ⬡ Weather Live
 ### Real-time Weather Dashboard on AWS
 
 ![AWS](https://img.shields.io/badge/AWS-Cloud-FF9900?style=for-the-badge&logo=amazon-aws&logoColor=white)
@@ -12,7 +12,7 @@
 
 A full-stack weather dashboard built entirely on **AWS Free Tier** — from local development to production deployment with HTTPS, CI/CD, monitoring, and cost optimization.
 
-[Live Demo](https://xxxx.cloudfront.net) · [Documentation](#documentation) · [Architecture](#architecture)
+[Live Demo](https://d3raltu0rxdu37.cloudfront.net/) · [Documentation](#documentation) · [Architecture](#architecture)
 
 </div>
 
@@ -37,7 +37,7 @@ A full-stack weather dashboard built entirely on **AWS Free Tier** — from loca
 
 ## Overview
 
-SkyWatch is an AWS learning project that covers the full spectrum of cloud development — from writing React components and Node.js APIs to provisioning infrastructure with Terraform, containerizing with Docker, setting up CI/CD pipelines, and monitoring with CloudWatch.
+Weather App is an AWS learning project that covers the full spectrum of cloud development — from writing React components and Node.js APIs to provisioning infrastructure with Terraform, containerizing with Docker, setting up CI/CD pipelines, and monitoring with CloudWatch.
 
 Everything runs on **AWS Free Tier**.
 
@@ -266,15 +266,15 @@ aws ecr get-login-password --region us-east-1 | \
 
 # Build and push
 cd backend
-docker build -t skywatch-backend .
-docker tag skywatch-backend:latest YOUR_ECR_URL:latest
+docker build -t weather-backend .
+docker tag weather-backend:latest YOUR_ECR_URL:latest
 docker push YOUR_ECR_URL:latest
 
 # SSH into EC2 and run container
-ssh -i skywatch-key.pem ubuntu@YOUR_ELASTIC_IP
+ssh -i key.pem ubuntu@YOUR_ELASTIC_IP
 docker pull YOUR_ECR_URL:latest
 docker run -d \
-  --name skywatch \
+  --name weather \
   --restart unless-stopped \
   -p 3000:3000 \
   --env-file ~/backend.env \
@@ -338,10 +338,10 @@ CloudWatch monitoring set up manually in AWS Console:
 | **Alarm: Status Check** | StatusCheckFailed >= 1 → SNS email |
 | **Alarm: High Memory** | mem_used_percent > 80% → SNS email |
 | **Alarm: High Disk** | disk_used_percent > 80% → SNS email |
-| **CloudWatch Logs** | Docker container logs → `skywatch-backend` log group |
+| **CloudWatch Logs** | Docker container logs → `weather-backend` log group |
 | **CloudWatch Agent** | Collects memory + disk metrics from EC2 |
 | **Dashboard** | CPU, memory, disk, alarm status, logs in one view |
-| **SNS Topic** | `skywatch-alerts` → email subscription |
+| **SNS Topic** | `weather-alerts` → email subscription |
 
 ---
 
